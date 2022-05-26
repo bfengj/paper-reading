@@ -217,7 +217,7 @@ mutate function是下面这5种：
 **思考**：
 
 - 不同于以往scanner采用黑盒的方式，webFuzz采用了灰盒的方式，插桩并且在扫描的时候对请求的边缘覆盖率进行分析和处理。
-- 不同于某些利用特定攻击语法来生成恶意payload来fuzz的scanner（paper中给出的例子是https://dl.acm.org/doi/10.1145/2557547.2557550，其中提到：The malicious inputs generation and evolution is achieved with a genetic algorithm, guided by an attack grammar，它的恶意输入是在攻击语法的指导下通过遗传算法产生和进化的），它采用了基于变种的Fuzzer，以不同的概率在代码中随机应用了5种变种函数来改变输入的参数，以触发更多的代码路径和覆盖率以及漏洞。
+- 不同于某些利用特定攻击语法来生成恶意payload来fuzz的scanner（paper中给出的例子是https://dl.acm.org/doi/10.1145/2557547.2557550  ，其中提到：The malicious inputs generation and evolution is achieved with a genetic algorithm, guided by an attack grammar，它的恶意输入是在攻击语法的指导下通过遗传算法产生和进化的），它采用了基于变种的Fuzzer，以不同的概率在代码中随机应用了5种变种函数来改变输入的参数，以触发更多的代码路径和覆盖率以及漏洞。
 - 不同于之前调研的scanner中使用上下文检测的办法来检测XSS，webFuzz通过寻找可执行js代码的那部分html并将其解析成AST，通过遍历AST寻找alert的调用且参数是0xdeadbeef来检测XSS漏洞，以减少误报率。
 - webFuzz通过将request的hit-count对应到9个buckets中（paper中写错了），每个buckets存放lightest的request，并且这个request还存放在heap tree（存放favorable的request）中，之后mutate都是基于heap tree中的request，通过这种方式来减少请求的语料库，只保存最favourable的request
 - webFuzz似乎扫描大项目的时候更能体现出它各种方法论的优势，但是相应的插桩之后会导致扫描大项目的性能变得很差；而且解析HTML代码同样需要花时间，会影响性能。
